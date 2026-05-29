@@ -1,5 +1,4 @@
 import math
-
 from methods import euler, heun, ec_dif
 # Se cargan los parametros desde parameters.txt
 def load_parameters():
@@ -24,8 +23,7 @@ def simular(metodo):
     # estado inicial 
     tiempo = 0
     altura = parametros['h0']
-    cantidad_pasos = int(tiempo_total / paso_integracion)
-
+    cantidad_pasos = int(tiempo_total / paso_integracion) + 1    
     # lista para almacenar resultados 
     tiempos = [0.0] * cantidad_pasos # 2000 posiciones para almacenar los tiempos
     alturas = [0.0] * cantidad_pasos 
@@ -34,9 +32,11 @@ def simular(metodo):
 
     tiempos[0] = tiempo
     alturas[0] = altura 
+    f_entradas[0] = 15 + 5 * math.cos(0.1 * 0)  # = 20
+    f_salidas[0]  = valvula_K1 * math.sqrt(gravedad * altura)
     i = 1
     while tiempo < tiempo_total: 
-        tiempo += paso_integracion
+        tiempo = round(tiempo + paso_integracion, 2) # Evita errores de precision acumulados
         
         if metodo == 'euler':
             derivada = ec_dif(alturas[i-1], tiempo, altura_critica, valvula_K1, valvula_K2, gravedad, area)
@@ -50,13 +50,10 @@ def simular(metodo):
         tiempos[i] = tiempo
         alturas[i] = altura 
         f_entradas[i] = 15 + 5 * math.cos(0.1 * tiempo)
-        if alturas[i-1] <= altura_critica:
-            f_salidas[i] = valvula_K1 * math.sqrt(gravedad * alturas[i-1])
+        if alturas[i] <= altura_critica:
+            f_salidas[i] = valvula_K1 * math.sqrt(gravedad * alturas[i])
         else:
-            f_salidas[i] = (valvula_K1 + valvula_K2) * math.sqrt(gravedad * alturas[i-1])        
+            f_salidas[i] = (valvula_K1 + valvula_K2) * math.sqrt(gravedad * alturas[i])        
         i += 1
-    
+
     return tiempos, alturas, f_entradas, f_salidas
-
-
-    
