@@ -1,0 +1,15 @@
+# Parametros sugeridos para la simulacion del sistema continuo
+A = 2 # Area de base del tanque (m^2).
+g = 9.8 # Aceleracion gravitatoria.
+K1 = 0.5 # Coeficiente de descarga.
+K2 = 0.8 
+Hc = 20 # Altura critica para activar la valvula secundaria
+
+# Condicion inicial
+h0 = 10 # Altura inicial (m)
+
+h = 0.05 # Paso de integracion 
+T = 100 # Tiempo total de simulacion
+
+
+
