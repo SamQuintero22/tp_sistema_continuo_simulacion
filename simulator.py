@@ -1,5 +1,7 @@
 import math
 from methods import euler, heun, ec_dif
+import matplotlib.pyplot as plt
+
 # Se cargan los parametros desde parameters.txt
 def load_parameters():
     parametros = {}
@@ -57,3 +59,30 @@ def simular(metodo):
         i += 1
 
     return tiempos, alturas, f_entradas, f_salidas
+
+def graficar(tiempos, alturas, f_entradas, f_salidas, altura_critica):
+    fig, (grafico1, grafico2) = plt.subplots(2, 1, figsize=(10, 7), sharex=True)
+
+    # Gráfico 1 - altura
+    grafico1.plot(tiempos, alturas, 'b-', label='h(t)')
+    grafico1.axhline(y=altura_critica, color='r', linestyle='--', label=f'hc = {altura_critica}')
+    grafico1.set_ylabel('Altura (m)')
+    grafico1.set_title('Evolución del nivel h(t)')
+    grafico1.legend()
+    grafico1.grid(True)
+
+    # Gráfico 2 - flujos
+    grafico2.plot(tiempos, f_entradas, 'g-', label='F_entrada(t)')
+    grafico2.plot(tiempos, f_salidas,  'r-', label='F_salida(t)')
+    grafico2.set_ylabel('Flujo (m³/s)')
+    grafico2.set_xlabel('Tiempo')
+    grafico2.set_title('Flujos de entrada y salida')
+    grafico2.legend()
+    grafico2.grid(True)
+
+    plt.tight_layout()
+    plt.show()
+
+if __name__ == "__main__":
+    tiempos,alturas,f_entrada,f_salida = simular('euler')
+    graficar(tiempos,alturas,f_entrada,f_salida, 20.0)
