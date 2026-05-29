@@ -1,3 +1,6 @@
+import math
+
+from methods import euler, heun, ec_dif
 # Se cargan los parametros desde parameters.txt
 def load_parameters():
     parametros = {}
@@ -7,7 +10,53 @@ def load_parameters():
             parametros[clave] = float(valor)
     return parametros
 
-if __name__ == "__main__":
-    params = load_parameters()
-    print(params)
+def simular(metodo):
+    parametros = load_parameters()
+    # inicializacion de variables
+    tiempo_total = parametros['T']
+    paso_integracion = parametros['h']
+    altura_critica = parametros['Hc']
+    valvula_K1 = parametros['K1']
+    valvula_K2 = parametros['K2']
+    gravedad = parametros['g']
+    area = parametros['A']
+
+    # estado inicial 
+    tiempo = 0
+    altura = parametros['h0']
+    cantidad_pasos = int(tiempo_total / paso_integracion)
+
+    # lista para almacenar resultados 
+    tiempos = [0.0] * cantidad_pasos # 2000 posiciones para almacenar los tiempos
+    alturas = [0.0] * cantidad_pasos 
+    f_entradas = [0.0] * cantidad_pasos
+    f_salidas = [0.0] * cantidad_pasos
+
+    tiempos[0] = tiempo
+    alturas[0] = altura 
+    i = 1
+    while tiempo < tiempo_total: 
+        tiempo += paso_integracion
+        
+        if metodo == 'euler':
+            derivada = ec_dif(alturas[i-1], tiempo, altura_critica, valvula_K1, valvula_K2, gravedad, area)
+            altura = euler(alturas[i-1], paso_integracion,derivada)
+        elif metodo == 'heun': 
+            altura = heun(alturas[i-1], tiempo, altura_critica, valvula_K1, valvula_K2, gravedad, area, paso_integracion)
+        
+        if altura < 0: # Control de no negatividad por si cambiamos parametros
+            altura = 0
+
+        tiempos[i] = tiempo
+        alturas[i] = altura 
+        f_entradas[i] = 15 + 5 * math.cos(0.1 * tiempo)
+        if alturas[i-1] <= altura_critica:
+            f_salidas[i] = valvula_K1 * math.sqrt(gravedad * alturas[i-1])
+        else:
+            f_salidas[i] = (valvula_K1 + valvula_K2) * math.sqrt(gravedad * alturas[i-1])        
+        i += 1
+    
+    return tiempos, alturas, f_entradas, f_salidas
+
+
     
