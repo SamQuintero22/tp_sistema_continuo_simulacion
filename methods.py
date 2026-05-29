@@ -24,7 +24,7 @@ def heun(altura_actual, tiempo, altura_critica, K1, K2, gravedad, area, paso_int
     altura_euler = altura_actual + paso_integracion * k1
 
     # segunda derivada, usando la estimacion 
-    k2 = ec_dif(tiempo + paso_integracion, altura_euler, altura_critica, K1, K2, gravedad, area)
+    k2 = ec_dif(altura_euler, tiempo + paso_integracion, altura_critica, K1, K2, gravedad, area)
     
     # promedio de las dos derivadas
     return altura_actual + 0.5 * paso_integracion * (k1 + k2)
