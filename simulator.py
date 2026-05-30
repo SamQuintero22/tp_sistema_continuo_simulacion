@@ -2,8 +2,8 @@ import math
 from methods import euler, heun, ec_dif
 import matplotlib.pyplot as plt
 
-# Se cargan los parametros desde parameters.txt
-def load_parameters():
+
+def cargar_parametros():
     parametros = {}
     with open('parameters.txt','r') as archivo:
         for linea in archivo:
@@ -12,7 +12,7 @@ def load_parameters():
     return parametros
 
 def simular(metodo):
-    parametros = load_parameters()
+    parametros = cargar_parametros()
     # inicializacion de variables
     tiempo_total = parametros['T']
     paso_integracion = parametros['h']
